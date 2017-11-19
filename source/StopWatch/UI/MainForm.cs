@@ -23,6 +23,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Threading;
+
 namespace StopWatch
 {
     public partial class MainForm : Form
@@ -59,7 +61,7 @@ namespace StopWatch
             cbFilters.DropDownStyle = ComboBoxStyle.DropDownList;
             cbFilters.DisplayMember = "Name";
 
-            ticker = new Timer();
+            ticker = new System.Windows.Forms.Timer();
             // First run should be almost immediately after start
             ticker.Interval = firstDelay;
             ticker.Tick += ticker_Tick;
@@ -71,11 +73,64 @@ namespace StopWatch
 
             this.settings.ComPort = comPortNames;
 
-            this.PositionEvent += new 
+            serialConnection.PositionEvent += new SerialConnection.PositionEventDelegate(PositionEventHandler);
 
+            waitForTimeKeepPosition = false;
+            issueKeyForNewPosition ="";
 
         }
 
+        delegate void positionCallback(object sender, PositionEventArgs e); 
+
+        void PositionEventHandler(object sender, PositionEventArgs e)
+        {
+            if (this.InvokeRequired == true)
+            {
+                Debug.WriteLine("positionData: callback required");
+
+                positionCallback callback = new positionCallback(PositionEventHandler);
+                this.Invoke(callback, sender, e);
+            }
+            else
+            {
+                Debug.WriteLine("positionData: NO callback required");
+
+
+                Debug.WriteLine("received positionEvent:");
+                Debug.Write("x:");
+                Debug.WriteLine(e.xPosition);
+                Debug.Write("y:");
+                Debug.WriteLine(e.yPosition);
+                Debug.Write("z:");
+                Debug.WriteLine(e.zPosition);
+
+                Thread thread = Thread.CurrentThread;
+                String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+
+                Debug.WriteLine(msg);
+                
+
+                if (waitForTimeKeepPosition == true)
+                {
+                    waitForTimeKeepPosition = false;
+
+
+                    foreach (var issueControl in this.issueControls)
+                    {
+
+                        Debug.WriteLine(issueControl.IssueKey);
+
+                        if (issueControl.IssueKey.CompareTo(issueKeyForNewPosition) == 0)
+                        {
+                            Debug.Write("set position data for issue: ");
+                            Debug.Write(issueControl.IssueKey);
+                        }
+                    }
+
+                }
+
+            }
+        }
 
         public void HandleSessionLock()
         {
@@ -182,8 +237,13 @@ namespace StopWatch
 
             InitializeIssueControls();
 
+            Thread thread = Thread.CurrentThread;
+            String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+
+            Debug.WriteLine(msg);
+
             // Add issuekeys from settings to issueControl controls
-            int i = 0;
+           int i = 0;
             foreach (var issueControl in this.issueControls)
             {
                 if (i < settings.PersistedIssues.Count)
@@ -204,6 +264,7 @@ namespace StopWatch
                         issueControl.Comment = persistedIssue.Comment;
                         issueControl.EstimateUpdateMethod = persistedIssue.EstimateUpdateMethod;
                         issueControl.EstimateUpdateValue = persistedIssue.EstimateUpdateValue;
+                        issueControl.timeKeepData = persistedIssue.timeKeepData;
                     }
                 }
                 i++;
@@ -366,6 +427,7 @@ namespace StopWatch
                 issue.TimerReset += Issue_TimerReset;
                 issue.Selected += Issue_Selected;
                 issue.TimeEdited += Issue_TimeEdited;
+                issue.SetTracker += Issue_SetTracker;
                 this.pMain.Controls.Add(issue);
             }
 
@@ -419,6 +481,28 @@ namespace StopWatch
         private void Issue_Selected(object sender, EventArgs e)
         {
             IssueSetCurrentByControl((IssueControl)sender);
+        }
+
+        private void Issue_SetTracker(object sender, EventArgs e)
+        {
+            IssueSetCurrentByControl((IssueControl)sender);
+
+            IssueControl currentIssue = (IssueControl)sender;
+
+            Debug.Write("Issue_SetTracker for issue: ");
+
+            waitForTimeKeepPosition = true;
+            issueKeyForNewPosition = currentIssue.IssueKey;
+            
+            Debug.Write(currentIssue.IssueKey);
+
+
+
+            Thread thread = Thread.CurrentThread;
+            String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+
+            Debug.WriteLine(msg);
+            
         }
 
         private void IssueSetCurrentByControl(IssueControl control)
@@ -558,6 +642,11 @@ namespace StopWatch
         {
             settings.PersistedIssues.Clear();
 
+            Thread thread = Thread.CurrentThread;
+            String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+
+            Debug.WriteLine(msg);
+
             foreach (var issueControl in this.issueControls)
             {
                 TimerState timerState = issueControl.WatchTimer.GetState();
@@ -571,7 +660,9 @@ namespace StopWatch
                     TotalTime = timerState.TotalTime,
                     Comment = issueControl.Comment,
                     EstimateUpdateMethod = issueControl.EstimateUpdateMethod,
-                    EstimateUpdateValue = issueControl.EstimateUpdateValue
+                    EstimateUpdateValue = issueControl.EstimateUpdateValue,
+                    timeKeepData = issueControl.timeKeepData,
+                                        
                 };
 
                 settings.PersistedIssues.Add(persistedIssue);
@@ -715,7 +806,7 @@ namespace StopWatch
             }
         }
 
-        private Timer ticker;
+        private System.Windows.Forms.Timer ticker;
 
         private JiraApiRequestFactory jiraApiRequestFactory;
         private RestRequestFactory restRequestFactory;
@@ -728,7 +819,8 @@ namespace StopWatch
 
         private IssueControl lastRunningIssue = null;
 
-        public event PositionEventHandler PositionEvent;
+        private bool waitForTimeKeepPosition;
+        private string issueKeyForNewPosition;
 
 
         #endregion
@@ -928,8 +1020,6 @@ namespace StopWatch
                 serialConnection.initComPort();
             }            
         }
-
-
     }
 
     // content item for the combo box
@@ -944,4 +1034,5 @@ namespace StopWatch
             Jql = jql;
         }
     }
+
 }

@@ -18,7 +18,10 @@ namespace StopWatch
         static bool _continueReading;
         public Settings settings { get; private set; }
 
-        public static event PositionEventHandler PositionEvent;
+        public delegate void PositionEventDelegate(object sender, PositionEventArgs e);
+
+
+        public event PositionEventDelegate PositionEvent;
 
 
         public SerialConnection(Settings settings)
@@ -37,8 +40,6 @@ namespace StopWatch
             {
                 return _serialPort.IsOpen;
             }
-
-
         }
 
         
@@ -109,7 +110,7 @@ namespace StopWatch
             }
         }
 
-        public static void Read()
+        public void Read()
         {
             while (_continueReading)
             {
@@ -123,11 +124,15 @@ namespace StopWatch
 
                     if(substrings[0].CompareTo("position") == 0)
                     {
-                        PositionEventArgs e = new PositionEventArgs(1, 2, 3);
+                        
+                        double x = Convert.ToDouble(substrings[1]);
+                        double y = Convert.ToDouble(substrings[2]);
+                        double z = Convert.ToDouble(substrings[3]);
+                        
+                        PositionEventArgs e = new PositionEventArgs(x, y, z);
+
 
                         OnPositionEvent(e);
-
-
                     }
 
 
@@ -136,7 +141,7 @@ namespace StopWatch
             }
         }
          
-        public static void OnPositionEvent(PositionEventArgs e)
+        public void OnPositionEvent(PositionEventArgs e)
         {
             // checks if the event has an subscriber
             if (PositionEvent != null)
@@ -146,7 +151,6 @@ namespace StopWatch
     }
 
 
-    public delegate void PositionEventHandler(object sender, PositionEventArgs e);
 
 
     public class PositionEventArgs : EventArgs
@@ -155,7 +159,7 @@ namespace StopWatch
         private double y = 0;
         private double z = 0;
         
-        // Constructor.
+        // Constructor
         public PositionEventArgs(double x, double y, double z)
         {
             this.x = x;
@@ -168,21 +172,17 @@ namespace StopWatch
             get { return x; }
             set { this.x = value; }
         }
-        public double xPosition
+        public double yPosition
         {
-            get { return x; }
-            set { this.x = value; }
+            get { return y; }
+            set { this.y = value; }
         }
-        public double xPosition
+        public double zPosition
         {
-            get { return x; }
-            set { this.x = value; }
-        }
-          
+            get { return z; }
+            set { this.z = value; }
+        }          
     }
-
-
-
 }
 
 

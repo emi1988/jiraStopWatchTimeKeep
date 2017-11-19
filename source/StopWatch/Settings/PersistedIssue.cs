@@ -28,5 +28,7 @@ namespace StopWatch
         public string Comment { get; set; }
         public EstimateUpdateMethods EstimateUpdateMethod { get; set; }
         public string EstimateUpdateValue { get; set; }
+        public int test{ get; set; }
+        public PositionData timeKeepData { get; set; }
     }
 }

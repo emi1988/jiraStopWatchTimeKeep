@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
+
 
 namespace StopWatch
 {
@@ -63,6 +65,7 @@ namespace StopWatch
         public string Comment { get; set; }
         public EstimateUpdateMethods EstimateUpdateMethod { get; set; }
         public string EstimateUpdateValue { get; set; }
+        public PositionData timeKeepData { get; set; }
 
         public bool Current
         {
@@ -88,6 +91,8 @@ namespace StopWatch
         public event EventHandler TimerStarted;
 
         public event EventHandler TimerReset;
+
+        public event EventHandler SetTracker;
         #endregion
 
 
@@ -756,8 +761,6 @@ namespace StopWatch
 
         private Settings settings;
 
-        //private int TimeKeepId;
-
         private int keyWidth;
         private string RemainingEstimate;
         private int RemainingEstimateSeconds;
@@ -825,7 +828,22 @@ namespace StopWatch
 
         private void btnSetTracker_Click(object sender, EventArgs e)
         {
+            Debug.WriteLine("set tracker cklicked");
+            //SetTracker.Invoke(this, e);
+
+            SetTracker.Invoke(this, new EventArgs());
 
         }
     }
+
+    [Serializable()]
+    public class PositionData
+    {
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
+        public string issueKey { get; set; }
+
+    }
+
 }
