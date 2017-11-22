@@ -114,6 +114,9 @@ namespace StopWatch
 
             this.jiraClient = jiraClient;
             this.WatchTimer = new WatchTimer();
+
+            this.timeKeepData = new PositionData();
+            this.timeKeepData.positionSet = false;
         }
 
         private void CbJiraTbEvents_MouseDown(object sender, EventArgs e)
@@ -391,12 +394,13 @@ namespace StopWatch
             // 
             // btnSetTracker
             // 
+            this.btnSetTracker.BackColor = System.Drawing.Color.Silver;
             this.btnSetTracker.Location = new System.Drawing.Point(500, 5);
             this.btnSetTracker.Name = "btnSetTracker";
             this.btnSetTracker.Size = new System.Drawing.Size(48, 30);
             this.btnSetTracker.TabIndex = 8;
             this.btnSetTracker.Text = "tracker";
-            this.btnSetTracker.UseVisualStyleBackColor = true;
+            this.btnSetTracker.UseVisualStyleBackColor = false;
             this.btnSetTracker.Click += new System.EventHandler(this.btnSetTracker_Click);
             // 
             // IssueControl
@@ -615,6 +619,20 @@ namespace StopWatch
             }
         }
 
+        public void SetTrackerColor()
+        {
+   
+            if (timeKeepData.positionSet == true)
+            {
+                btnSetTracker.BackColor = Color.Red;    
+            }
+            else
+            {
+                btnSetTracker.BackColor = Color.Silver;    
+            }
+
+        }
+
         private void tbTime_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             EditTime();
@@ -831,7 +849,18 @@ namespace StopWatch
             Debug.WriteLine("set tracker cklicked");
             //SetTracker.Invoke(this, e);
 
-            SetTracker.Invoke(this, new EventArgs());
+            if (timeKeepData.positionSet == true)
+            {
+                //if position is already stored, deaktivate position tracking for this issue
+                timeKeepData.positionSet = false;
+
+                this.SetTrackerColor();
+            }
+            else
+            {
+                //send event to mainForm to signal that the next positionshould be stored to this issue
+                SetTracker.Invoke(this, new EventArgs());
+            }
 
         }
     }
@@ -842,7 +871,7 @@ namespace StopWatch
         public double x { get; set; }
         public double y { get; set; }
         public double z { get; set; }
-        public string issueKey { get; set; }
+        public bool positionSet { get; set; }
 
     }
 

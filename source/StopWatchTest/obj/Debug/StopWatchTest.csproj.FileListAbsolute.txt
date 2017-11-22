@@ -1,1 +1,14 @@
 C:\Users\emi\Downloads\jirastopwatch-master\source\StopWatchTest\obj\Debug\StopWatchTest.csprojResolveAssemblyReference.cache
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\StopWatchTest.dll
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\StopWatchTest.pdb
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\Moq.dll
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\nunit.framework.dll
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\RestSharp.dll
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\StopWatch.exe
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\StopWatch.pdb
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\Moq.xml
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\nunit.framework.xml
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\bin\Debug\RestSharp.xml
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\obj\Debug\StopWatchTest.csprojResolveAssemblyReference.cache
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\obj\Debug\StopWatchTest.dll
+C:\Users\emi\Dropbox\projekts\jira\jirastopwatch-master\source\StopWatchTest\obj\Debug\StopWatchTest.pdb

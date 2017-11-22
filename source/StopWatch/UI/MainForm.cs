@@ -76,11 +76,11 @@ namespace StopWatch
             serialConnection.PositionEvent += new SerialConnection.PositionEventDelegate(PositionEventHandler);
 
             waitForTimeKeepPosition = false;
-            issueKeyForNewPosition ="";
+            issueKeyForNewPosition = "";
 
         }
 
-        delegate void positionCallback(object sender, PositionEventArgs e); 
+        delegate void positionCallback(object sender, PositionEventArgs e);
 
         void PositionEventHandler(object sender, PositionEventArgs e)
         {
@@ -108,28 +108,96 @@ namespace StopWatch
                 String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
 
                 Debug.WriteLine(msg);
-                
+
 
                 if (waitForTimeKeepPosition == true)
                 {
                     waitForTimeKeepPosition = false;
 
-
+                    int i = 0;
                     foreach (var issueControl in this.issueControls)
                     {
-
                         Debug.WriteLine(issueControl.IssueKey);
 
                         if (issueControl.IssueKey.CompareTo(issueKeyForNewPosition) == 0)
                         {
                             Debug.Write("set position data for issue: ");
                             Debug.Write(issueControl.IssueKey);
+
+                            //issueControl.IssueKey = "testEmi";
+
+                            issueControl.timeKeepData.x = e.xPosition;
+                            issueControl.timeKeepData.y = e.yPosition;
+                            issueControl.timeKeepData.z = e.zPosition;
+                            issueControl.timeKeepData.positionSet = true;
+                            issueControl.SetTrackerColor();
+                            break;
                         }
+                        i++;
                     }
 
                 }
+                else
+                {
+                    double threshold = 50;
+                    int i = 0;
+                    bool timerStarted = false;
+                    String issueStarted = "";
+                    foreach (var issueControl in this.issueControls)
+                    {
+                        try
+                        {
+                            timerStarted = false;
+                            //first check if position-time-tracking is enabled for the current issueControl
 
+                            if (issueControl.timeKeepData.positionSet == true)
+                            {
+                                if ((issueControl.timeKeepData.x < e.xPosition + threshold) & (issueControl.timeKeepData.x > e.xPosition - threshold))
+                                {
+                                    if ((issueControl.timeKeepData.y < e.yPosition + threshold) & (issueControl.timeKeepData.y > e.yPosition - threshold))
+                                    {
+                                        if ((issueControl.timeKeepData.z < e.zPosition + threshold) & (issueControl.timeKeepData.z > e.zPosition - threshold))
+                                        {
+                                            Debug.Write("current position matches to this issue: ");
+                                            Debug.Write(issueControl.IssueKey);
+
+                                            issueStarted = issueControl.IssueKey;
+
+                                            issueControl.WatchTimer.GetState();
+                                            issueControl.Start();
+
+                                            timerStarted = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            //stop timer if timer wasn't started
+                            if(timerStarted == false)
+                            {
+                                issueControl.Pause();
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                        i++;
+                    }
+                }
             }
+        }
+
+        public bool testIfValueInRange(double targetValue, double testValue, double threshold)
+        {
+            if ((targetValue < testValue + threshold) & (targetValue > testValue - threshold))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }          
         }
 
         public void HandleSessionLock()
@@ -243,13 +311,16 @@ namespace StopWatch
             Debug.WriteLine(msg);
 
             // Add issuekeys from settings to issueControl controls
-           int i = 0;
+            int i = 0;
             foreach (var issueControl in this.issueControls)
             {
                 if (i < settings.PersistedIssues.Count)
                 {
                     var persistedIssue = settings.PersistedIssues[i];
                     issueControl.IssueKey = persistedIssue.Key;
+                    issueControl.timeKeepData = persistedIssue.timeKeepData;
+                    issueControl.SetTrackerColor();
+
 
                     if (this.settings.SaveTimerState != SaveTimerSetting.NoSave)
                     {
@@ -264,9 +335,9 @@ namespace StopWatch
                         issueControl.Comment = persistedIssue.Comment;
                         issueControl.EstimateUpdateMethod = persistedIssue.EstimateUpdateMethod;
                         issueControl.EstimateUpdateValue = persistedIssue.EstimateUpdateValue;
-                        issueControl.timeKeepData = persistedIssue.timeKeepData;
                     }
                 }
+
                 i++;
             }
 
@@ -401,7 +472,7 @@ namespace StopWatch
                 this.ttMain.SetToolTip(this.pbAddIssue, "Add another issue row (CTRL-N)");
                 this.pbAddIssue.Cursor = System.Windows.Forms.Cursors.Hand;
             }
-            
+
             // Remove IssueControl where user has clicked the remove button
             foreach (IssueControl issue in this.issueControls)
             {
@@ -457,7 +528,7 @@ namespace StopWatch
 
             if (this.Bottom > workingArea.Bottom)
                 this.Top = workingArea.Bottom - this.Height;
-            
+
             pMain.Height = ClientSize.Height - pTop.Height - pBottom.Height;
             pBottom.Top = ClientSize.Height - pBottom.Height;
 
@@ -493,7 +564,7 @@ namespace StopWatch
 
             waitForTimeKeepPosition = true;
             issueKeyForNewPosition = currentIssue.IssueKey;
-            
+
             Debug.Write(currentIssue.IssueKey);
 
 
@@ -502,7 +573,7 @@ namespace StopWatch
             String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
 
             Debug.WriteLine(msg);
-            
+
         }
 
         private void IssueSetCurrentByControl(IssueControl control)
@@ -602,7 +673,7 @@ namespace StopWatch
                 () =>
                 {
                     var startTransitions = this.settings.StartTransitions
-                        .Split(new string[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+                        .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(l => l.Trim().ToLower()).ToArray();
 
                     var availableTransitions = jiraClient.GetAvailableTransitions(issueKey);
@@ -643,7 +714,7 @@ namespace StopWatch
             settings.PersistedIssues.Clear();
 
             Thread thread = Thread.CurrentThread;
-            String msg = String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+            String msg = String.Format("SaveSettings Thread ID: {0}\n", thread.ManagedThreadId);
 
             Debug.WriteLine(msg);
 
@@ -662,7 +733,7 @@ namespace StopWatch
                     EstimateUpdateMethod = issueControl.EstimateUpdateMethod,
                     EstimateUpdateValue = issueControl.EstimateUpdateValue,
                     timeKeepData = issueControl.timeKeepData,
-                                        
+
                 };
 
                 settings.PersistedIssues.Add(persistedIssue);
@@ -709,7 +780,7 @@ namespace StopWatch
                                 var item = new CBFilterItem(filter.Id, filter.Name, filter.Jql);
                                 cbFilters.Items.Add(item);
                                 if (item.Id == this.settings.CurrentFilter)
-                                   currentItem = item;
+                                    currentItem = item;
                             }
 
                             if (currentItem != null)
@@ -732,7 +803,8 @@ namespace StopWatch
 
         private void ShowOnTop()
         {
-            if (WindowState == FormWindowState.Minimized) {
+            if (WindowState == FormWindowState.Minimized)
+            {
                 Show();
                 WindowState = FormWindowState.Normal;
                 notifyIcon.Visible = false;
@@ -1011,24 +1083,28 @@ namespace StopWatch
         private void btConnectToTimeKeep_Click(object sender, EventArgs e)
         {
             //connect or dissconnect 
-            if(serialConnection.isConnected())
+            if (serialConnection.isConnected())
             {
                 serialConnection.Disconnect();
+                btConnectToTimeKeep.BackColor = Color.Red;
             }
             else
             {
                 serialConnection.initComPort();
-            }            
+                btConnectToTimeKeep.BackColor = Color.Red;
+            }
         }
     }
 
     // content item for the combo box
-    public class CBFilterItem {
+    public class CBFilterItem
+    {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Jql { get; set; }
 
-        public CBFilterItem(int id, string name, string jql) {
+        public CBFilterItem(int id, string name, string jql)
+        {
             Id = id;
             Name = name;
             Jql = jql;

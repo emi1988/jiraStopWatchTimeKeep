@@ -68,14 +68,20 @@ namespace StopWatch
                 _serialPort.ReadTimeout = 500;
                 _serialPort.WriteTimeout = 500;
 
-                _serialPort.Open();
-                _readThread.Start();
-                                
+                try
+                {
+                    _serialPort.Open();
+                    _readThread.Start();
+
+                }
+                catch(System.IO.IOException)
+                {
+                    Debug.WriteLine("could not connect to selected com port");
+                }                                
             }
             else
             {
                 Debug.WriteLine("no com port was set. No connection is started!");
-
             }
         }
 
@@ -138,6 +144,7 @@ namespace StopWatch
 
                 }
                 catch (TimeoutException) { }
+
             }
         }
          
