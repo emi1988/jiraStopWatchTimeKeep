@@ -75,6 +75,8 @@ namespace StopWatch
             this.cbComPort = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbTcpPort = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblJiraBaseUrl
@@ -110,7 +112,7 @@ namespace StopWatch
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOk.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOk.Location = new System.Drawing.Point(264, 523);
+            this.btnOk.Location = new System.Drawing.Point(264, 542);
             this.btnOk.Margin = new System.Windows.Forms.Padding(2);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(56, 22);
@@ -121,7 +123,7 @@ namespace StopWatch
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(324, 523);
+            this.btnCancel.Location = new System.Drawing.Point(324, 542);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(56, 22);
@@ -139,7 +141,7 @@ namespace StopWatch
             // 
             // btnAbout
             // 
-            this.btnAbout.Location = new System.Drawing.Point(6, 523);
+            this.btnAbout.Location = new System.Drawing.Point(6, 542);
             this.btnAbout.Margin = new System.Windows.Forms.Padding(2);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(56, 22);
@@ -363,18 +365,33 @@ namespace StopWatch
             // label2
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(9, 495);
+            this.label2.Location = new System.Drawing.Point(9, 497);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(370, 2);
             this.label2.TabIndex = 30;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(3, 461);
+            this.label3.Location = new System.Drawing.Point(8, 461);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(113, 36);
             this.label3.TabIndex = 31;
             this.label3.Text = "Com Port for TimeKeep:";
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(8, 504);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(113, 36);
+            this.label4.TabIndex = 32;
+            this.label4.Text = "TCP Port for TimeKeep:";
+            // 
+            // tbTcpPort
+            // 
+            this.tbTcpPort.Location = new System.Drawing.Point(122, 504);
+            this.tbTcpPort.Name = "tbTcpPort";
+            this.tbTcpPort.Size = new System.Drawing.Size(100, 20);
+            this.tbTcpPort.TabIndex = 33;
             // 
             // SettingsForm
             // 
@@ -382,7 +399,9 @@ namespace StopWatch
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(391, 556);
+            this.ClientSize = new System.Drawing.Size(391, 575);
+            this.Controls.Add(this.tbTcpPort);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cbComPort);
@@ -460,5 +479,7 @@ namespace StopWatch
         private System.Windows.Forms.ComboBox cbComPort;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbTcpPort;
     }
 }

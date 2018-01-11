@@ -75,6 +75,10 @@ namespace StopWatch
 
             serialConnection.PositionEvent += new SerialConnection.PositionEventDelegate(PositionEventHandler);
 
+            
+            tcpConnection = new TcpConnection(this.settings);
+            tcpConnection.PositionEvent += new TcpConnection.PositionEventDelegate(PositionEventHandler);
+
             waitForTimeKeepPosition = false;
             issueKeyForNewPosition = "";
 
@@ -886,6 +890,7 @@ namespace StopWatch
         private RestClientFactory restClientFactory;
         private JiraClient jiraClient;
         private SerialConnection serialConnection;
+        private TcpConnection tcpConnection;
 
         private Settings settings;
 
@@ -1082,6 +1087,7 @@ namespace StopWatch
 
         private void btConnectToTimeKeep_Click(object sender, EventArgs e)
         {
+            /*
             //connect or dissconnect 
             if (serialConnection.isConnected())
             {
@@ -1093,6 +1099,26 @@ namespace StopWatch
                 serialConnection.initComPort();
                 btConnectToTimeKeep.BackColor = Color.Red;
             }
+             */
+
+            //connect or dissconnect to tcp server
+            if (tcpConnection.isConnected())
+            {
+                tcpConnection.Disconnect();
+            }
+            else
+            {
+                tcpConnection.initTcpPort();               
+            }
+
+            if (tcpConnection.isConnected() == true )
+            {
+                 btConnectToTimeKeep.BackColor = Color.Red;
+            }
+            else
+            {
+                 btConnectToTimeKeep.BackColor = Color.Gray;
+            }       
         }
     }
 

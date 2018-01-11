@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\JiraKeyHelpers.cs" />
+    <Compile Include="Helpers\TcpConnection.cs" />
     <Compile Include="Helpers\SerialConnection.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Jira\DTO\JiraConfiguration.cs" />
@@ -157,23 +158,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="icons\stopwatchimg.png" />
-    <None Include="icons\stopwatchicon.ico" />
+    <None Include="Helpers\icons\stopwatchimg.png" />
+    <None Include="Helpers\icons\stopwatchicon.ico" />
     <None Include="Resources\add22.bmp" />
-    <Content Include="icons\addissue22.png" />
+    <Content Include="Helpers\icons\addissue22.png" />
     <None Include="Resources\addissue22.png" />
-    <Content Include="icons\delete24.png" />
-    <None Include="icons\help22.png" />
+    <Content Include="Helpers\icons\delete24.png" />
+    <None Include="Helpers\icons\help22.png" />
     <Content Include="stopwatchicon.ico" />
-    <None Include="icons\play26.png" />
-    <None Include="icons\pause26.png" />
-    <None Include="icons\login22.png" />
-    <None Include="icons\settings22.png" />
-    <None Include="icons\reset24.png" />
-    <None Include="icons\openbrowser26.png" />
-    <None Include="icons\posttime26.png" />
+    <None Include="Helpers\icons\play26.png" />
+    <None Include="Helpers\icons\pause26.png" />
+    <None Include="Helpers\icons\login22.png" />
+    <None Include="Helpers\icons\settings22.png" />
+    <None Include="Helpers\icons\reset24.png" />
+    <None Include="Helpers\icons\openbrowser26.png" />
+    <None Include="Helpers\icons\posttime26.png" />
     <None Include="Resources\posttimenote26.bmp" />
-    <Content Include="icons\posttimenote26.png" />
+    <Content Include="Helpers\icons\posttimenote26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

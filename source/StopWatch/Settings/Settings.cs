@@ -76,6 +76,7 @@ namespace StopWatch
         public List<string> ComPort { get; set; }
         public string SelectedComPort;
 
+        public int SelectedTcpPort { get; set; }
 
 
         #endregion
@@ -147,6 +148,8 @@ namespace StopWatch
 
             this.SelectedComPort = Properties.Settings.Default.ComPort;
 
+            this.SelectedTcpPort = Properties.Settings.Default.TcpPort;
+
 
             CheckForUpdate = Properties.Settings.Default.CheckForUpdate;
         }
@@ -187,6 +190,8 @@ namespace StopWatch
                 Properties.Settings.Default.CheckForUpdate = CheckForUpdate;
 
                 Properties.Settings.Default.ComPort = this.SelectedComPort;
+
+                Properties.Settings.Default.TcpPort = this.SelectedTcpPort;
 
                 Properties.Settings.Default.Save();
             }

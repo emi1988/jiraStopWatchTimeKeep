@@ -250,5 +250,17 @@ namespace StopWatch.Properties {
                 this["ComPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TcpPort {
+            get {
+                return ((int)(this["TcpPort"]));
+            }
+            set {
+                this["TcpPort"] = value;
+            }
+        }
     }
 }

@@ -87,18 +87,15 @@ namespace StopWatch
 
         public void Disconnect()
         {
+            //todo: diplay dissconnect on ui
 
-            if(_serialPort.IsOpen)
-            {
                 Debug.WriteLine("closing com port ");
 
-                _continueReading = false;
+            _continueReading = false;
 
-                _readThread.Join();
-                _serialPort.Close();
+            _readThread.Join();
+            _serialPort.Close();
                
-            }
-
         }
 
         public void GetComPorts(List<string> portNamesList)
@@ -140,11 +137,15 @@ namespace StopWatch
 
                         OnPositionEvent(e);
                     }
-
-
                 }
-                catch (TimeoutException) { }
-
+                catch (TimeoutException) 
+                { 
+                    this.Disconnect();
+                }
+                catch (System.UnauthorizedAccessException)
+                {
+                    this.Disconnect();
+                }
             }
         }
          

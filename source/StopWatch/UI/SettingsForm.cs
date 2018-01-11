@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System;
 
 namespace StopWatch
 {
@@ -99,6 +100,8 @@ namespace StopWatch
             cbLoggingEnabbled.Checked = this.settings.LoggingEnabled;
 
             cbCheckForUpdate.Checked = settings.CheckForUpdate;
+
+            tbTcpPort.Text = settings.SelectedTcpPort.ToString();
         }
         #endregion
 
@@ -126,6 +129,8 @@ namespace StopWatch
                 this.settings.LoggingEnabled = cbLoggingEnabbled.Checked;
 
                 this.settings.SelectedComPort = cbComPort.Text;
+
+                this.settings.SelectedTcpPort = Convert.ToInt32(tbTcpPort.Text);
 
                 settings.CheckForUpdate = cbCheckForUpdate.Checked;
             }
